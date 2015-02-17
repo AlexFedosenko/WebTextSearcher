@@ -1,0 +1,20 @@
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/out
+*.iml
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+>>>>>>> b4278b7e929e9eed50fe56aa7c9cbb4b780b5d44

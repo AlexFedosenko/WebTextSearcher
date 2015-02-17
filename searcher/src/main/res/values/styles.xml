@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light">-->
+        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+    <!--</style>-->
+
+    <style name="AppTheme" parent="@style/Theme.AppCompat">
+        <item name="actionBarStyle">@style/ActionBar.Solid</item>
+        <item name="android:background">@drawable/pressed_selector</item>
+    </style>
+
+    <style name="ActionBar.Solid" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="background">@drawable/bg_ab</item>
+    </style>
+
+</resources>
