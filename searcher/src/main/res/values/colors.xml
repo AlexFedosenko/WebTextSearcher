@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- EditText view general colors -->
+    <!-- ////////////////////////////////////////// -->
+    <color name="edit_text_disabled">#6e6e6e</color>
+    <color name="edit_text_not_active">#c7c7c7</color>
+    <!-- \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
+
+    <color name="style_editText_textColorHint">#d0d0d0</color>
+    <color name="style_headerText_textColor">#a7a7a7</color>
+
+</resources>

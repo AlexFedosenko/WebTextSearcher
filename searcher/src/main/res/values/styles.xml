@@ -14,4 +14,36 @@
         <item name="background">@drawable/bg_ab</item>
     </style>
 
+    <style name="customFragment">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/base_dark_background</item>
+        <item name="android:paddingTop">@dimen/fragment_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/fragment_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/fragment_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/fragment_horizontal_padding</item>
+    </style>
+
+    <style name="editText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">left|bottom</item>
+        <item name="android:layout_height">@dimen/style_editText_layoutHeight</item>
+        <item name="android:textColor">@color/edt_text_color</item>
+        <item name="android:textSize">@dimen/style_editText_textSize</item>
+        <item name="android:textColorHint">@color/style_editText_textColorHint</item>
+        <item name="android:background">@drawable/edt_selector</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="headerText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/style_headerText_textSize</item>
+        <item name="android:paddingLeft">@dimen/style_headerText_paddingLeft</item>
+        <item name="android:textColor">@color/style_headerText_textColor</item>
+        <item name="android:background">@drawable/title_text_bottom_divider</item>
+    </style>
+
 </resources>

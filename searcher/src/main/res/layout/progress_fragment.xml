@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                style="@style/customFragment">
+
+    <TextView
+            android:id="@+id/text_inputHeader"
+            style="@style/headerText"
+            android:text="@string/inputHeader"
+            android:layout_alignParentTop="true"/>
+
+    <EditText
+            android:id="@+id/edt_url"
+            style="@style/editText"
+            android:hint="@string/url_hint"
+            android:layout_below="@+id/text_inputHeader"/>
+
+    <EditText
+            android:id="@+id/edt_target"
+            style="@style/editText"
+            android:hint="@string/searchingText_hint"
+            android:layout_below="@+id/edt_url"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edt_target"
+            android:weightSum="2"
+            android:orientation="horizontal">
+
+        <EditText
+                android:id="@+id/edt_threadAmount"
+                style="@style/editText"
+                android:hint="@string/threadAmount_hint"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"/>
+
+        <EditText
+                android:id="@+id/edt_urlsAmount"
+                style="@style/editText"
+                android:hint="@string/threadAmount_hint"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
