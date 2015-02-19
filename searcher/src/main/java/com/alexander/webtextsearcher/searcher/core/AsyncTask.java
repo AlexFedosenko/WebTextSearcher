@@ -56,7 +56,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
     /**
      * An {@link Executor} that can be used to execute tasks in parallel.
      */
-    public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
+    public static Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
 
     /**
@@ -171,6 +171,9 @@ public abstract class AsyncTask<Params, Progress, Result> {
 
     public static void setCorePoolSize(int poolSize) {
         CORE_POOL_SIZE = poolSize;
+        THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
+                TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
+        setDefaultExecutor(THREAD_POOL_EXECUTOR);
     }
 
     private void postResultIfNotInvoked(Result result) {
@@ -305,7 +308,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
     /**
      * <p>
      * Attempts to cancel execution of this task. This attempt will fail if the task has already completed, already been cancelled, or could not be cancelled for some other reason. If successful, and this task has not started when <tt>cancel</tt> is
-     * called, this task should never run. If the task has already started, then the <tt>mayInterruptIfRunning</tt> parameter determines whether the thread executing this task should be interrupted in an attempt to stop the task.
+     * called, this task should never run. If the task has already started, then the <tt>mayInterruptIfRunning</tt> parameter determines whether the thread executing this task should be interrupted in an attempt to stopSearch the task.
      * </p>
      *
      * <p>

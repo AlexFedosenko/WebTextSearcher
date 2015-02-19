@@ -9,11 +9,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 import com.alexander.webtextsearcher.searcher.R;
 import com.alexander.webtextsearcher.searcher.core.AsyncTask;
-import com.alexander.webtextsearcher.searcher.core.ProcessWebPageTask;
 import com.alexander.webtextsearcher.searcher.core.SearchController;
 
 
@@ -37,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
         mActionBar = getSupportActionBar();
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        mSearchController = new SearchController();
+        mSearchController = new SearchController(this);
 
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             @Override
@@ -95,10 +93,9 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_play:
+            case R.id.action_start:
                 collectInputData();
                 if (mSearchController.isReadyForSearch()) {
-                    // TODO: search
 
                     AsyncTask.setCorePoolSize(mSearchController.getThreadAmount());
                     mSearchController.start();
@@ -109,6 +106,10 @@ public class MainActivity extends ActionBarActivity {
                     Toast.makeText(this, R.string.cannot_play_toast, Toast.LENGTH_LONG).show();
                 }
                 break;
+            case R.id.action_stop:
+                mSearchController.stop();
+                item.setVisible(false);
+                mMenu.findItem(R.id.action_start).setVisible(true);
             default:
                 Log.w(LOG_TAG, "Unknown action");
         }
@@ -129,6 +130,10 @@ public class MainActivity extends ActionBarActivity {
             mSearchController.setThreadAmount(currentProgressFragment.getThreadAmount());
             mSearchController.setUrlAmount(currentProgressFragment.getUrlAmount());
         }
+    }
+
+    public void stopSearch() {
+        mMenu.performIdentifierAction(R.id.action_stop, 0);
     }
 
 }

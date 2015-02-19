@@ -3,7 +3,7 @@
 
     <string name="app_name">WebTextSearcher</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_play">Play</string>
+    <string name="action_start">Start</string>
     <string name="action_pause">Pause</string>
     <string name="action_stop">Stop</string>
 

@@ -1,5 +1,10 @@
 package com.alexander.webtextsearcher.searcher.core;
 
+import com.alexander.webtextsearcher.searcher.ui.MainActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchController {
 
     private String mUrl = "";
@@ -7,6 +12,21 @@ public class SearchController {
     private Integer mThreadAmount;
     private Integer mUrlAmount;
 
+    private List<String> allUrlList;
+    private List<String> foundTextList;
+    private List<ProcessWebPageTask> taskList;
+
+    private MainActivity mActivity;
+
+    private int mUrlToProcessAmount;
+
+    public SearchController(MainActivity activity) {
+        mActivity = activity;
+        allUrlList = new ArrayList<String>();
+        foundTextList = new ArrayList<String>();
+        taskList = new ArrayList<ProcessWebPageTask>();
+        mUrlToProcessAmount = 0;
+    }
 
 
     public boolean isReadyForSearch() {
@@ -45,7 +65,40 @@ public class SearchController {
         return mUrlAmount;
     }
 
+    public void addUrl(String url) {
+        // try to add new URL if it was not searched before
+        if (mUrlAmount != null && mUrlToProcessAmount < mUrlAmount && !allUrlList.contains(url)) {
+            runNewTask(url);
+        }
+    }
+
+    public void addFoundText(String text) {
+        foundTextList.add(text);
+    }
+
+    public void removeTask(ProcessWebPageTask task) {
+        taskList.remove(task);
+        if (taskList.isEmpty()) {
+            // no more URLs available or URL limit is reached
+            mActivity.stopSearch();
+        }
+    }
+
     public void start() {
-        new ProcessWebPageTask().execute(mUrl);
+        runNewTask(mUrl);
+    }
+
+    private void runNewTask(String url) {
+        ProcessWebPageTask task = new ProcessWebPageTask(this);
+        allUrlList.add(url);
+        taskList.add(task);
+        task.execute(url);
+        mUrlToProcessAmount++;
+    }
+
+    public void stop() {
+        for (ProcessWebPageTask task : taskList) {
+            task.cancel(true);
+        }
     }
 }
