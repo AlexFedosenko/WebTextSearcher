@@ -5,17 +5,29 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 import com.alexander.webtextsearcher.searcher.R;
+import com.alexander.webtextsearcher.searcher.core.AsyncTask;
+import com.alexander.webtextsearcher.searcher.core.ProcessWebPageTask;
+import com.alexander.webtextsearcher.searcher.core.SearchController;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    private final String LOG_TAG = "MainActivity";
+
     private ActionBar mActionBar;
     private Fragment mCurrentMainActivityFragment;
+    private Menu mMenu;
+    private SearchController mSearchController;
+
     private View vActivityRootView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +36,8 @@ public class MainActivity extends ActionBarActivity {
 
         mActionBar = getSupportActionBar();
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        mSearchController = new SearchController();
 
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             @Override
@@ -34,10 +48,14 @@ public class MainActivity extends ActionBarActivity {
                         mCurrentMainActivityFragment = resultsFragment;
                         fragmentTransaction.replace(R.id.layout_pagesContainer, resultsFragment,
                                 getString(R.string.results_fragmentTag));
+
+//                        collectInputData();
+
                         break;
                     case 0:
                     default:
                         final ProgressFragment progressFragment = new ProgressFragment();
+                        progressFragment.setSearchController(mSearchController);
                         mCurrentMainActivityFragment = progressFragment;
                         fragmentTransaction.replace(R.id.layout_pagesContainer, progressFragment,
                                 getString(R.string.progress_fragmentTag));
@@ -66,6 +84,7 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        mMenu = menu;
         return true;
     }
 
@@ -74,7 +93,25 @@ public class MainActivity extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_play:
+                collectInputData();
+                if (mSearchController.isReadyForSearch()) {
+                    // TODO: search
+
+                    AsyncTask.setCorePoolSize(mSearchController.getThreadAmount());
+                    mSearchController.start();
+
+                    item.setVisible(false);
+                    mMenu.findItem(R.id.action_stop).setVisible(true);
+                } else {
+                    Toast.makeText(this, R.string.cannot_play_toast, Toast.LENGTH_LONG).show();
+                }
+                break;
+            default:
+                Log.w(LOG_TAG, "Unknown action");
+        }
 //
 //        //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
@@ -83,4 +120,15 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void collectInputData() {
+        if (mCurrentMainActivityFragment.getTag().equals(getString(R.string.progress_fragmentTag))) {
+            ProgressFragment currentProgressFragment = (ProgressFragment) mCurrentMainActivityFragment;
+            mSearchController.setUrl(currentProgressFragment.getUrl());
+            mSearchController.setTargetText(currentProgressFragment.getTargetText());
+            mSearchController.setThreadAmount(currentProgressFragment.getThreadAmount());
+            mSearchController.setUrlAmount(currentProgressFragment.getUrlAmount());
+        }
+    }
+
 }

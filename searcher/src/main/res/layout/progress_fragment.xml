@@ -21,6 +21,7 @@
             android:layout_below="@+id/edt_url"/>
 
     <LinearLayout
+            android:id="@+id/layout_amounts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/edt_target"
@@ -32,15 +33,41 @@
                 style="@style/editText"
                 android:hint="@string/threadAmount_hint"
                 android:inputType="numberDecimal"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/edt_amount_marginHorizontal"/>
 
         <EditText
                 android:id="@+id/edt_urlsAmount"
                 style="@style/editText"
-                android:hint="@string/threadAmount_hint"
+                android:hint="@string/urlsAmount_hint"
                 android:inputType="numberDecimal"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/edt_amount_marginHorizontal"/>
 
     </LinearLayout>
+
+    <TextView
+            android:id="@+id/text_progressHeader"
+            style="@style/headerText"
+            android:layout_marginTop="@dimen/text_progressHeader_marginTop"
+            android:text="@string/progressHeader"
+            android:layout_below="@+id/layout_amounts"/>
+
+    <TextView
+            android:id="@+id/text_statusParagraph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_status_textSize"
+            android:text="@string/status"
+            android:layout_marginTop="@dimen/text_status_marginTop"
+            android:layout_below="@+id/text_progressHeader"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_status_textSize"
+            android:text="@string/status"
+            android:layout_alignBottom="@+id/text_statusParagraph"
+            android:layout_toRightOf="@+id/text_statusParagraph"/>
 
 </RelativeLayout>

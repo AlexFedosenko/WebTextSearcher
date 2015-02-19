@@ -6,6 +6,12 @@
     <dimen name="style_editText_textSize">15sp</dimen>
     <dimen name="style_editText_layoutHeight">48dp</dimen>
 
-    <dimen name="style_headerText_textSize">14sp</dimen>
+    <dimen name="style_headerText_textSize">18sp</dimen>
     <dimen name="style_headerText_paddingLeft">6dp</dimen>
+
+    <dimen name="edt_amount_marginHorizontal">6dp</dimen>
+    <dimen name="text_progressHeader_marginTop">18dp</dimen>
+
+    <dimen name="text_status_textSize">18sp</dimen>
+    <dimen name="text_status_marginTop">12dp</dimen>
 </resources>

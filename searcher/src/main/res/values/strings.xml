@@ -3,11 +3,15 @@
 
     <string name="app_name">WebTextSearcher</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_play">Play</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_stop">Stop</string>
 
 
     <string name="progress_fragmentTag">progress_fragmentTag</string>
     <string name="results_fragmentTag">results_fragmentTag</string>
+
+    <string name="cannot_play_toast">Fill all fields</string>
 
     <!-- Progress fragment -->
     <string name="url_hint">URL</string>
@@ -16,5 +20,12 @@
     <string name="urlsAmount_hint">URLs</string>
 
     <string name="inputHeader">INPUT</string>
+    <string name="progressHeader">PROGRESS</string>
+
+    <string name="status">"Status: "</string>
+    <string name="found">Found</string>
+    <string name="notFound">Not found</string>
+    <string name="searching">Searching…</string>
+    <string name="error">Error</string>
 
 </resources>
