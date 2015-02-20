@@ -75,6 +75,8 @@ public abstract class AsyncTask<Params, Progress, Result> {
     private final WorkerRunnable<Params, Result> mWorker;
     private final FutureTask<Result> mFuture;
 
+    protected ThreadControl mThreadControl;
+
     private volatile Status mStatus = Status.PENDING;
 
     private final AtomicBoolean mTaskInvoked = new AtomicBoolean();
@@ -127,6 +129,14 @@ public abstract class AsyncTask<Params, Progress, Result> {
     /** @hide Used to force static handler to be created. */
     public static void init() {
         sHandler.getLooper();
+    }
+
+    public void pause() {
+        mThreadControl.pause();
+    }
+
+    public void resume() {
+        mThreadControl.resume();
     }
 
     /** @hide */
@@ -327,6 +337,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * @see #onCancelled(Object)
      */
     public final boolean cancel(boolean mayInterruptIfRunning) {
+        mThreadControl.cancel();
         return mFuture.cancel(mayInterruptIfRunning);
     }
 

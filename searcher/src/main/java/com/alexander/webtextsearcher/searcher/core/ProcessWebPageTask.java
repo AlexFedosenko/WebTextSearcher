@@ -18,6 +18,7 @@ public class ProcessWebPageTask extends AsyncTask<String,String,String> {
 
     public ProcessWebPageTask(SearchController controller) {
         mSearchController = controller;
+        mThreadControl = new ThreadControl();
     }
 
     @Override
@@ -32,6 +33,12 @@ public class ProcessWebPageTask extends AsyncTask<String,String,String> {
                     new InputStreamReader(content));
             String line;
             while ((line = buffer.readLine()) != null) {
+                //Pause work if control is paused.
+                mThreadControl.waitIfPaused();
+                //Stop work if control is cancelled.
+                if (mThreadControl.isCancelled()) {
+                    break;
+                }
                 List<String> urls = Utils.findUrls(line);
                 for (String url : urls) {
                     publishProgress(URL_TAG, url);

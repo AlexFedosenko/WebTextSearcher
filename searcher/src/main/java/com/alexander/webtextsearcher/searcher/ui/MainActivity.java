@@ -97,19 +97,26 @@ public class MainActivity extends ActionBarActivity {
                 collectInputData();
                 if (mSearchController.isReadyForSearch()) {
 
-                    AsyncTask.setCorePoolSize(mSearchController.getThreadAmount());
+
                     mSearchController.start();
 
                     item.setVisible(false);
+                    mMenu.findItem(R.id.action_pause).setVisible(true);
                     mMenu.findItem(R.id.action_stop).setVisible(true);
                 } else {
                     Toast.makeText(this, R.string.cannot_play_toast, Toast.LENGTH_LONG).show();
                 }
                 break;
+            case R.id.action_pause:
+                mSearchController.pause();
+                item.setVisible(false);
+                mMenu.findItem(R.id.action_start).setVisible(true);
+                break;
             case R.id.action_stop:
                 mSearchController.stop();
                 item.setVisible(false);
                 mMenu.findItem(R.id.action_start).setVisible(true);
+                break;
             default:
                 Log.w(LOG_TAG, "Unknown action");
         }

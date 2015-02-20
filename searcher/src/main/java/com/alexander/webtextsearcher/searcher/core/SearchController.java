@@ -7,6 +7,11 @@ import java.util.List;
 
 public class SearchController {
 
+    private final String IDLE = "idle";
+    private final String RUNNING = "running";
+    private final String SUSPENDED = "suspended";
+
+    private String mState = IDLE;
     private String mUrl = "";
     private String mTargetText = "";
     private Integer mThreadAmount;
@@ -81,11 +86,20 @@ public class SearchController {
         if (taskList.isEmpty()) {
             // no more URLs available or URL limit is reached
             mActivity.stopSearch();
+            mState = IDLE;
         }
     }
 
     public void start() {
-        runNewTask(mUrl);
+        if (mState.equals(IDLE)) {
+            AsyncTask.setCorePoolSize(getThreadAmount());
+            runNewTask(mUrl);
+            mState = RUNNING;
+        }
+        if (mState.equals(SUSPENDED)) {
+            resume();
+        }
+
     }
 
     private void runNewTask(String url) {
@@ -100,5 +114,20 @@ public class SearchController {
         for (ProcessWebPageTask task : taskList) {
             task.cancel(true);
         }
+        mState = IDLE;
+    }
+
+    public void pause() {
+        for (ProcessWebPageTask task : taskList) {
+            task.pause();
+        }
+        mState = SUSPENDED;
+    }
+
+    public void resume() {
+        for (ProcessWebPageTask task : taskList) {
+            task.resume();
+        }
+        mState = RUNNING;
     }
 }
