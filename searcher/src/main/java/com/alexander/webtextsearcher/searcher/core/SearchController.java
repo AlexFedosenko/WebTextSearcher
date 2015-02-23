@@ -19,6 +19,8 @@ public class SearchController {
     private Integer mThreadAmount;
     private Integer mUrlAmount;
 
+    private String mError;
+
     private Map<String, Boolean> allUrlMap;
     private Set<String> foundTextList;
     private List<ProcessWebPageTask> taskList;
@@ -26,6 +28,7 @@ public class SearchController {
     private MainActivity mActivity;
     private UpdateProgressListener mUpdateProgressListener;
     private UpdateStatusListener mUpdateStatusListener;
+    private UpdateResultListener mUpdateResultListener;
 
     private int mUrlToProcessAmount;
     private int mAlreadyScannedUrlAmount;
@@ -45,6 +48,10 @@ public class SearchController {
 
     public void setUpdateStatusListener(UpdateStatusListener listener) {
         mUpdateStatusListener = listener;
+    }
+
+    public void setUpdateResultListener(UpdateResultListener listener) {
+        mUpdateResultListener = listener;
     }
 
     public boolean isReadyForSearch() {
@@ -87,7 +94,9 @@ public class SearchController {
         // try to add new URL if it was not searched before
         if (mUrlAmount != null && mUrlToProcessAmount < mUrlAmount) {
             runNewTask(url);
-            mUpdateProgressListener.incrementProgressList(url);
+            if (mUpdateProgressListener != null) {
+                mUpdateProgressListener.incrementProgressList(url);
+            }
         }
     }
 
@@ -103,10 +112,22 @@ public class SearchController {
 
     public void addFoundText(String text) {
         foundTextList.add(text);
+        if (mUpdateResultListener != null) {
+            mUpdateResultListener.updateResult();
+        } else {
+            mActivity.markUnseenResults();
+        }
     }
 
-    public String[] getFoundTextList() {
-        return (String[])foundTextList.toArray();
+    public void showErrorStatus(String error) {
+        mError = error;
+        if (mUpdateStatusListener != null)
+        mUpdateStatusListener.updateStatus(mActivity.getString(R.string.error) + ": " + error,
+                mActivity.getResources().getColor(R.color.text_status_error_textColor));
+    }
+
+    public List<String> getFoundTextList() {
+        return new ArrayList<String>(foundTextList);
     }
 
     public int getAlreadyScannedUrlAmount() {
@@ -127,7 +148,9 @@ public class SearchController {
             // no more URLs available or URL limit is reached
             mActivity.stopSearch();
             mState = IDLE;
-            mUpdateProgressListener.finishProgress();
+            if (mUpdateProgressListener != null) {
+                mUpdateProgressListener.finishProgress();
+            }
             printFoundStatus();
             unlockScreenOrientation();
         }
@@ -140,16 +163,21 @@ public class SearchController {
             foundTextList.clear();
             mUrlToProcessAmount = 0;
             mAlreadyScannedUrlAmount = 0;
+            mError = "";
             AsyncTask.setCorePoolSize(getThreadAmount());
             addUrl(mUrl);
             mState = RUNNING;
-            mUpdateProgressListener.resetProgress();
+            if (mUpdateProgressListener != null) {
+                mUpdateProgressListener.resetProgress();
+            }
             lockScreenOrientation();
         }
         if (mState.equals(SUSPENDED)) {
             resume();
         }
-        mUpdateStatusListener.updateStatus(mActivity.getString(R.string.searching));
+        if (mUpdateStatusListener != null) {
+            mUpdateStatusListener.updateStatus(mActivity.getString(R.string.searching));
+        }
 
     }
 
@@ -167,7 +195,9 @@ public class SearchController {
         }
         mState = IDLE;
         mAlreadyScannedUrlAmount = mUrlAmount;
-        mUpdateProgressListener.finishProgress();
+        if (mUpdateProgressListener != null) {
+            mUpdateProgressListener.finishProgress();
+        }
         printFoundStatus();
         unlockScreenOrientation();
     }
@@ -185,14 +215,17 @@ public class SearchController {
             task.resume();
         }
         mState = RUNNING;
-//        mUpdateStatusListener.updateStatus(mActivity.getString(R.string.searching));
     }
 
     private void printFoundStatus() {
-        if (foundTextList.isEmpty()) {
-            mUpdateStatusListener.updateStatus(mActivity.getString(R.string.notFound), mActivity.getResources().getColor(R.color.text_status_notFound_textColor));
+        if (mError.isEmpty() && mUpdateStatusListener != null) {
+            if (foundTextList.isEmpty()) {
+                mUpdateStatusListener.updateStatus(mActivity.getString(R.string.notFound), mActivity.getResources().getColor(R.color.text_status_notFound_textColor));
+            } else {
+                mUpdateStatusListener.updateStatus(mActivity.getString(R.string.found), mActivity.getResources().getColor(R.color.text_status_found_textColor));
+            }
         } else {
-            mUpdateStatusListener.updateStatus(mActivity.getString(R.string.found), mActivity.getResources().getColor(R.color.text_status_found_textColor));
+            showErrorStatus(mError);
         }
     }
 

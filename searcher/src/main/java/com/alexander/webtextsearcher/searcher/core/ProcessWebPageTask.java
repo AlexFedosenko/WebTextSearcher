@@ -19,6 +19,7 @@ public class ProcessWebPageTask extends AsyncTask<String,String,String> {
 
     private static final String URL_TAG = "url";
     private static final String TEXT_TAG = "text";
+    private static final String STATUS_TAG = "status";
     private final SearchController mSearchController;
 
     private boolean allowSearch;
@@ -67,6 +68,8 @@ public class ProcessWebPageTask extends AsyncTask<String,String,String> {
             }
 
         } catch (Exception e) {
+            String[] error = e.getClass().toString().split("\\.");
+            publishProgress(STATUS_TAG, error[error.length - 1]);
             e.printStackTrace();
         }
         Log.v(LOG_TAG, "Thread #" + this.toString() + " finished");
@@ -80,6 +83,9 @@ public class ProcessWebPageTask extends AsyncTask<String,String,String> {
         }
         if (values[0].equals(TEXT_TAG)) {
             mSearchController.addFoundText(values[1]);
+        }
+        if (values[0].equals(STATUS_TAG)) {
+            mSearchController.showErrorStatus(values[1]);
         }
         super.onProgressUpdate(values);
     }

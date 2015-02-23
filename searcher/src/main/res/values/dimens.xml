@@ -16,4 +16,6 @@
     <dimen name="text_status_marginTop">12dp</dimen>
 
     <dimen name="listItem_url_layoutHeight">48dp</dimen>
+    <dimen name="listItem_result_layoutHeight">48dp</dimen>
+    <dimen name="listItem_content_marginHorizontal">6dp</dimen>
 </resources>

@@ -12,6 +12,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/chBox_wasScanned"
+            android:layout_marginLeft="@dimen/listItem_content_marginHorizontal"
             android:ellipsize="end"/>
 
     <CheckBox
@@ -19,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@android:style/Widget.CompoundButton.CheckBox"
+            android:layout_marginRight="@dimen/listItem_content_marginHorizontal"
             android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

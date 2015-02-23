@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/list_results"
-        style="@style/customFragment"
-        android:divider="@drawable/divider_grey"
-        android:cacheColorHint="@android:color/transparent"/>
+        style="@style/customFragment">
+
+    <ListView
+            android:id="@+id/list_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider_grey"
+            android:cacheColorHint="@android:color/transparent"/>
+
+</LinearLayout>

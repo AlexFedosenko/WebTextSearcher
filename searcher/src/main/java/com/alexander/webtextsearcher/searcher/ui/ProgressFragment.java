@@ -76,6 +76,7 @@ public class ProgressFragment extends Fragment implements UpdateProgressListener
         mSearchController = searchController;
         mSearchController.setUpdateProgressListener(this);
         mSearchController.setUpdateStatusListener(this);
+        mSearchController.setUpdateResultListener(null);
     }
 
     public String getUrl() {

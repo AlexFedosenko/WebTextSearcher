@@ -40,7 +40,6 @@ public class UrlListAdapter extends BaseAdapter{
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder viewHolder;
 
-//        if (view == null) {
         viewHolder = new ViewHolder();
 
         view = mInflater.inflate(R.layout.list_item_url, viewGroup, false);
@@ -49,12 +48,6 @@ public class UrlListAdapter extends BaseAdapter{
 
         viewHolder.vTextUrl = (TextView) view.findViewById(R.id.text_url);
         viewHolder.vChBoxWasScanned = (CheckBox) view.findViewById(R.id.chBox_wasScanned);
-
-//            view.setTag(viewHolder);
-//        } else {
-//            viewHolder = (ViewHolder) view.getTag();
-//        }
-
 
         String url = (String)mUrls.keySet().toArray()[i];
         viewHolder.vTextUrl.setText(url);

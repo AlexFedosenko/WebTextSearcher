@@ -45,6 +45,7 @@ public class MainActivity extends ActionBarActivity {
                         mCurrentMainActivityFragment = resultsFragment;
                         fragmentTransaction.replace(R.id.layout_pagesContainer, resultsFragment,
                                 getString(R.string.results_fragmentTag));
+                        mActionBar.getTabAt(1).setText(getResources().getStringArray(R.array.navigationTabs)[1]);
                         break;
                     case 0:
                     default:
@@ -147,6 +148,10 @@ public class MainActivity extends ActionBarActivity {
 
     public SearchController getSearchController() {
         return mSearchController;
+    }
+
+    public void markUnseenResults() {
+        mActionBar.getTabAt(1).setText(getResources().getStringArray(R.array.navigationTabs)[1] + "*");
     }
 
 }
