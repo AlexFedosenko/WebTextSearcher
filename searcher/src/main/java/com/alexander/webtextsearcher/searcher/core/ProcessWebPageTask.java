@@ -60,7 +60,7 @@ public class ProcessWebPageTask extends AsyncTask<String,String,String> {
                     for (String url : urls) {
                         publishProgress(URL_TAG, url);
                     }
-                    List<String> foundTexts = Utils.findTargetText(line, mSearchController.getTargetText());
+                    List<String> foundTexts = Utils.findTargetText(line, mSearchController.getTargetText(), Boolean.parseBoolean(strings[1]));
                     for (String sentence : foundTexts) {
                         publishProgress(TEXT_TAG, sentence);
                     }

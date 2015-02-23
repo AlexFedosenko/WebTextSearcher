@@ -32,6 +32,7 @@ public class SearchController {
 
     private int mUrlToProcessAmount;
     private int mAlreadyScannedUrlAmount;
+    private boolean mSearchInMeta;
 
     public SearchController(MainActivity activity) {
         mActivity = activity;
@@ -40,6 +41,7 @@ public class SearchController {
         taskList = new ArrayList<ProcessWebPageTask>();
         mUrlToProcessAmount = 0;
         mAlreadyScannedUrlAmount = 0;
+        mSearchInMeta = false;
     }
 
     public void setUpdateProgressListener(UpdateProgressListener listener) {
@@ -74,6 +76,10 @@ public class SearchController {
         mUrlAmount = urls;
     }
 
+    public void setSearchInMeta(boolean search) {
+        mSearchInMeta = search;
+    }
+
     public String getUrl() {
         return mUrl;
     }
@@ -88,6 +94,10 @@ public class SearchController {
 
     public Integer getUrlAmount() {
         return mUrlAmount;
+    }
+
+    public boolean isSearchInMeta() {
+        return mSearchInMeta;
     }
 
     public void addUrl(String url) {
@@ -144,6 +154,7 @@ public class SearchController {
         if (mUpdateProgressListener != null) {
             mUpdateProgressListener.incrementProgress(url);
         }
+        checkUrl(url);
         if (taskList.isEmpty()) {
             // no more URLs available or URL limit is reached
             mActivity.stopSearch();
@@ -185,7 +196,7 @@ public class SearchController {
         ProcessWebPageTask task = new ProcessWebPageTask(this);
         allUrlMap.put(url, false);
         taskList.add(task);
-        task.execute(url);
+        task.execute(url, String.valueOf(mSearchInMeta));
         mUrlToProcessAmount++;
     }
 

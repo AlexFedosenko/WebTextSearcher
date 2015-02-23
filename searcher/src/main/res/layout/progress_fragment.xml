@@ -52,12 +52,20 @@
 
         </LinearLayout>
 
+        <CheckBox
+                android:id="@+id/chBox_searchInMeta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@android:style/Widget.CompoundButton.CheckBox"
+                android:text="@string/metadataSearch"
+                android:layout_below="@+id/layout_amounts"/>
+
         <TextView
                 android:id="@+id/text_progressHeader"
                 style="@style/headerText"
                 android:layout_marginTop="@dimen/text_progressHeader_marginTop"
                 android:text="@string/progressHeader"
-                android:layout_below="@+id/layout_amounts"/>
+                android:layout_below="@+id/chBox_searchInMeta"/>
 
         <TextView
                 android:id="@+id/text_statusParagraph"
@@ -67,7 +75,6 @@
                 android:text="@string/status"
                 android:layout_marginTop="@dimen/text_status_marginTop"
                 android:layout_below="@+id/text_progressHeader"/>
-
 
         <TextView
                 android:id="@+id/text_status"

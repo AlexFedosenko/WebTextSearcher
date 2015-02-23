@@ -19,6 +19,8 @@
     <string name="threadAmount_hint">Threads</string>
     <string name="urlsAmount_hint">URLs</string>
 
+    <string name="metadataSearch">Search in metadata</string>
+
     <string name="inputHeader">INPUT</string>
     <string name="progressHeader">PROGRESS</string>
     <string name="urlsHeader">URL LIST</string>

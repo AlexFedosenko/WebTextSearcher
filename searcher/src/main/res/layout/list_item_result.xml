@@ -9,8 +9,8 @@
             android:id="@+id/text_result"
             android:layout_width="match_parent"
             android:layout_height="@dimen/listItem_result_layoutHeight"
-            android:layout_marginLeft="@dimen/listItem_content_marginHorizontal"
-            android:layout_marginRight="@dimen/listItem_content_marginHorizontal"
-            android:ellipsize="marquee"/>
+            android:paddingLeft="@dimen/listItem_content_marginHorizontal"
+            android:paddingRight="@dimen/listItem_content_marginHorizontal"
+            android:ellipsize="middle"/>
 
 </LinearLayout>

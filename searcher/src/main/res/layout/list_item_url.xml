@@ -13,7 +13,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/chBox_wasScanned"
             android:layout_marginLeft="@dimen/listItem_content_marginHorizontal"
-            android:ellipsize="end"/>
+            android:ellipsize="middle"/>
 
     <CheckBox
             android:id="@+id/chBox_wasScanned"

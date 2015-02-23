@@ -47,7 +47,7 @@ public class Utils {
         return resultList;
     }
 
-    public static List<String> findTargetText(String inputText, String targetText) {
+    public static List<String> findTargetText(String inputText, String targetText, boolean searchInMeta) {
         List<String> resultList = new ArrayList<String>();
         Pattern pattern = Pattern.compile(
                 "# Match a sentence ending in punctuation or EOS.\n" +
@@ -66,7 +66,28 @@ public class Utils {
         while (m.find()) {
             String sentence = m.group();
             if (sentence.contains(targetText)) {
-                resultList.add(sentence);
+                if (!searchInMeta) {
+                    String opBracket = "<";
+                    String edBracket = ">";
+                    int cursor = 0;
+                    int opPosition = 0;
+                    int edPosition = 0;
+                    while (opPosition != -1 && edPosition != -1) {
+                        opPosition = sentence.indexOf(opBracket, edPosition);
+                        if (opPosition == -1) {
+                            opPosition = sentence.length() - 1;
+                        }
+                        if (sentence.substring(edPosition, opPosition).contains(targetText)) {
+                            resultList.add(sentence);
+                            break;
+                        } else {
+                            edPosition = sentence.indexOf(edBracket, cursor);
+                            cursor = ++opPosition;
+                        }
+                    }
+                } else {
+                    resultList.add(sentence);
+                }
             }
         }
         return resultList;

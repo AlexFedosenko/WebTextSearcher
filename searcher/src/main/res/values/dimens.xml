@@ -17,5 +17,5 @@
 
     <dimen name="listItem_url_layoutHeight">48dp</dimen>
     <dimen name="listItem_result_layoutHeight">48dp</dimen>
-    <dimen name="listItem_content_marginHorizontal">6dp</dimen>
+    <dimen name="listItem_content_marginHorizontal">12dp</dimen>
 </resources>

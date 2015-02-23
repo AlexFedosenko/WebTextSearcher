@@ -46,6 +46,8 @@ public class MainActivity extends ActionBarActivity {
                         fragmentTransaction.replace(R.id.layout_pagesContainer, resultsFragment,
                                 getString(R.string.results_fragmentTag));
                         mActionBar.getTabAt(1).setText(getResources().getStringArray(R.array.navigationTabs)[1]);
+
+                        collectInputData();
                         break;
                     case 0:
                     default:
@@ -132,6 +134,7 @@ public class MainActivity extends ActionBarActivity {
             mSearchController.setTargetText(currentProgressFragment.getTargetText());
             mSearchController.setThreadAmount(currentProgressFragment.getThreadAmount());
             mSearchController.setUrlAmount(currentProgressFragment.getUrlAmount());
+            mSearchController.setSearchInMeta(currentProgressFragment.isSearchInMeta());
         }
     }
 

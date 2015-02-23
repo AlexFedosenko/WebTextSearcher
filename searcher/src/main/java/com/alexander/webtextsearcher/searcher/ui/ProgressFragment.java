@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import com.alexander.webtextsearcher.searcher.R;
 import com.alexander.webtextsearcher.searcher.core.*;
 import org.w3c.dom.Text;
@@ -21,7 +18,7 @@ public class ProgressFragment extends Fragment implements UpdateProgressListener
     private EditText vEdtThreads;
     private EditText vEdtUrls;
     private TextView vTextStatus;
-    private TextView vTextUrlsHeader;
+    private CheckBox vChBoxMeta;
     private ProgressBar vProgressBar;
     private ListView vListUrls;
 
@@ -62,7 +59,8 @@ public class ProgressFragment extends Fragment implements UpdateProgressListener
 
         vTextStatus = (TextView)rootView.findViewById(R.id.text_status);
 
-        vTextUrlsHeader = (TextView)rootView.findViewById(R.id.text_urlsHeader);
+        vChBoxMeta = (CheckBox)rootView.findViewById(R.id.chBox_searchInMeta);
+        vChBoxMeta.setChecked(mSearchController.isSearchInMeta());
 
         vListUrls = (ListView)rootView.findViewById(R.id.list_urls);
         mAdapter = new UrlListAdapter(getActivity(), mSearchController.getAllUrlMap());
@@ -103,11 +101,16 @@ public class ProgressFragment extends Fragment implements UpdateProgressListener
         return getUrls().isEmpty() ? null : Integer.parseInt(getUrls());
     }
 
+    public boolean isSearchInMeta() {
+        return vChBoxMeta.isChecked();
+    }
+
     public void setEditFieldsEnabled(boolean enable) {
         vEdtTarget.setEnabled(enable);
         vEdtUrl.setEnabled(enable);
         vEdtThreads.setEnabled(enable);
         vEdtUrls.setEnabled(enable);
+        vChBoxMeta.setEnabled(enable);
     }
 
     @Override
@@ -128,7 +131,6 @@ public class ProgressFragment extends Fragment implements UpdateProgressListener
     @Override
     public void incrementProgress(String url) {
         vProgressBar.setProgress(vProgressBar.getProgress() + 1);
-        mSearchController.checkUrl(url);
         mAdapter.updateDataSet(mSearchController.getAllUrlMap());
         Utils.setListViewHeightBasedOnChildren(vListUrls);
     }
@@ -148,7 +150,7 @@ public class ProgressFragment extends Fragment implements UpdateProgressListener
 
     @Override
     public void updateStatus(String status) {
-        updateStatus(status, getResources().getColor(android.R.color.white));
+        updateStatus(status, getActivity().getResources().getColor(android.R.color.white));
     }
 
     @Override

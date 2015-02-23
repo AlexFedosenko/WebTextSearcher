@@ -31,7 +31,6 @@ public class ResultsFragment extends Fragment implements UpdateResultListener {
         setSearchController(((MainActivity)getActivity()).getSearchController());
         mAdapter = new ResultListAdapter(getActivity(), mSearchController.getFoundTextList());
         vListResults.setAdapter(mAdapter);
-//        Utils.setListViewHeightBasedOnChildren(vListResults);
 
         return rootView;
     }
@@ -39,11 +38,12 @@ public class ResultsFragment extends Fragment implements UpdateResultListener {
     private void setSearchController(SearchController searchController) {
         mSearchController = searchController;
         mSearchController.setUpdateResultListener(this);
+        mSearchController.setUpdateStatusListener(null);
+        mSearchController.setUpdateProgressListener(null);
     }
 
     @Override
     public void updateResult() {
         mAdapter.updateDataSet(mSearchController.getFoundTextList());
-//        Utils.setListViewHeightBasedOnChildren(vListResults);
     }
 }
