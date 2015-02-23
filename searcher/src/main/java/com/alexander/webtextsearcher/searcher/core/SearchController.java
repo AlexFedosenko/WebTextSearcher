@@ -1,9 +1,11 @@
 package com.alexander.webtextsearcher.searcher.core;
 
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import com.alexander.webtextsearcher.searcher.R;
 import com.alexander.webtextsearcher.searcher.ui.MainActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SearchController {
 
@@ -17,22 +19,33 @@ public class SearchController {
     private Integer mThreadAmount;
     private Integer mUrlAmount;
 
-    private List<String> allUrlList;
-    private List<String> foundTextList;
+    private Map<String, Boolean> allUrlMap;
+    private Set<String> foundTextList;
     private List<ProcessWebPageTask> taskList;
 
     private MainActivity mActivity;
+    private UpdateProgressListener mUpdateProgressListener;
+    private UpdateStatusListener mUpdateStatusListener;
 
     private int mUrlToProcessAmount;
+    private int mAlreadyScannedUrlAmount;
 
     public SearchController(MainActivity activity) {
         mActivity = activity;
-        allUrlList = new ArrayList<String>();
-        foundTextList = new ArrayList<String>();
+        allUrlMap = new LinkedHashMap<String, Boolean>();
+        foundTextList = new HashSet<String>();
         taskList = new ArrayList<ProcessWebPageTask>();
         mUrlToProcessAmount = 0;
+        mAlreadyScannedUrlAmount = 0;
     }
 
+    public void setUpdateProgressListener(UpdateProgressListener listener) {
+        mUpdateProgressListener = listener;
+    }
+
+    public void setUpdateStatusListener(UpdateStatusListener listener) {
+        mUpdateStatusListener = listener;
+    }
 
     public boolean isReadyForSearch() {
         return !mUrl.isEmpty() && !mTargetText.isEmpty() && mThreadAmount != null && mUrlAmount != null;
@@ -72,39 +85,77 @@ public class SearchController {
 
     public void addUrl(String url) {
         // try to add new URL if it was not searched before
-        if (mUrlAmount != null && mUrlToProcessAmount < mUrlAmount && !allUrlList.contains(url)) {
+        if (mUrlAmount != null && mUrlToProcessAmount < mUrlAmount) {
             runNewTask(url);
+            mUpdateProgressListener.incrementProgressList(url);
         }
+    }
+
+    public void checkUrl(String url) {
+        if (allUrlMap.get(url) != null) {
+            allUrlMap.put(url, true);
+        }
+    }
+
+    public Map<String, Boolean> getAllUrlMap() {
+        return allUrlMap;
     }
 
     public void addFoundText(String text) {
         foundTextList.add(text);
     }
 
-    public void removeTask(ProcessWebPageTask task) {
+    public String[] getFoundTextList() {
+        return (String[])foundTextList.toArray();
+    }
+
+    public int getAlreadyScannedUrlAmount() {
+        return mAlreadyScannedUrlAmount;
+    }
+
+    public boolean isInProgress() {
+        return !mState.equals(IDLE);
+    }
+
+    public void removeTask(ProcessWebPageTask task, String url) {
         taskList.remove(task);
+        mAlreadyScannedUrlAmount++;
+        if (mUpdateProgressListener != null) {
+            mUpdateProgressListener.incrementProgress(url);
+        }
         if (taskList.isEmpty()) {
             // no more URLs available or URL limit is reached
             mActivity.stopSearch();
             mState = IDLE;
+            mUpdateProgressListener.finishProgress();
+            printFoundStatus();
+            unlockScreenOrientation();
         }
     }
 
     public void start() {
         if (mState.equals(IDLE)) {
+            allUrlMap.clear();
+            taskList.clear();
+            foundTextList.clear();
+            mUrlToProcessAmount = 0;
+            mAlreadyScannedUrlAmount = 0;
             AsyncTask.setCorePoolSize(getThreadAmount());
-            runNewTask(mUrl);
+            addUrl(mUrl);
             mState = RUNNING;
+            mUpdateProgressListener.resetProgress();
+            lockScreenOrientation();
         }
         if (mState.equals(SUSPENDED)) {
             resume();
         }
+        mUpdateStatusListener.updateStatus(mActivity.getString(R.string.searching));
 
     }
 
     private void runNewTask(String url) {
         ProcessWebPageTask task = new ProcessWebPageTask(this);
-        allUrlList.add(url);
+        allUrlMap.put(url, false);
         taskList.add(task);
         task.execute(url);
         mUrlToProcessAmount++;
@@ -115,6 +166,10 @@ public class SearchController {
             task.cancel(true);
         }
         mState = IDLE;
+        mAlreadyScannedUrlAmount = mUrlAmount;
+        mUpdateProgressListener.finishProgress();
+        printFoundStatus();
+        unlockScreenOrientation();
     }
 
     public void pause() {
@@ -122,6 +177,7 @@ public class SearchController {
             task.pause();
         }
         mState = SUSPENDED;
+        printFoundStatus();
     }
 
     public void resume() {
@@ -129,5 +185,27 @@ public class SearchController {
             task.resume();
         }
         mState = RUNNING;
+//        mUpdateStatusListener.updateStatus(mActivity.getString(R.string.searching));
+    }
+
+    private void printFoundStatus() {
+        if (foundTextList.isEmpty()) {
+            mUpdateStatusListener.updateStatus(mActivity.getString(R.string.notFound), mActivity.getResources().getColor(R.color.text_status_notFound_textColor));
+        } else {
+            mUpdateStatusListener.updateStatus(mActivity.getString(R.string.found), mActivity.getResources().getColor(R.color.text_status_found_textColor));
+        }
+    }
+
+    private void lockScreenOrientation() {
+        int currentOrientation = mActivity.getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+
+    private void unlockScreenOrientation() {
+        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 }

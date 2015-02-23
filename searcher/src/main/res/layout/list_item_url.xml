@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:gravity="center_vertical"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/listItem_url_layoutHeight"
+              android:descendantFocusability="blocksDescendants">
+
+    <TextView
+            android:id="@+id/text_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/chBox_wasScanned"
+            android:ellipsize="end"/>
+
+    <CheckBox
+            android:id="@+id/chBox_wasScanned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@android:style/Widget.CompoundButton.CheckBox"
+            android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

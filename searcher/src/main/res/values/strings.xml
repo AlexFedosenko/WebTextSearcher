@@ -21,11 +21,13 @@
 
     <string name="inputHeader">INPUT</string>
     <string name="progressHeader">PROGRESS</string>
+    <string name="urlsHeader">URL LIST</string>
 
     <string name="status">"Status: "</string>
-    <string name="found">Found</string>
-    <string name="notFound">Not found</string>
-    <string name="searching">Searching…</string>
-    <string name="error">Error</string>
+    <string name="ready">ready</string>
+    <string name="found">found</string>
+    <string name="notFound">not found</string>
+    <string name="searching">searching…</string>
+    <string name="error">error</string>
 
 </resources>

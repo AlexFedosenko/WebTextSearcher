@@ -10,4 +10,8 @@
     <color name="style_editText_textColorHint">#d0d0d0</color>
     <color name="style_headerText_textColor">#a7a7a7</color>
 
+    <color name="text_status_notFound_textColor">#a7a7a7</color>
+    <color name="text_status_found_textColor">#11ae54</color>
+    <color name="text_status_error_textColor">#da3232</color>
+
 </resources>

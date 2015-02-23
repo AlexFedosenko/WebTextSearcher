@@ -1,6 +1,7 @@
 package com.alexander.webtextsearcher.searcher.core;
 
 
+import android.util.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -12,17 +13,25 @@ import java.util.List;
 
 public class ProcessWebPageTask extends AsyncTask<String,String,String> {
 
+    private static final String LOG_TAG = "ProcessWebPageTask";
+    private static final String BODY_START = "<body>";
+    private static final String BODY_END = "</body>";
+
     private static final String URL_TAG = "url";
     private static final String TEXT_TAG = "text";
     private final SearchController mSearchController;
 
+    private boolean allowSearch;
+
     public ProcessWebPageTask(SearchController controller) {
         mSearchController = controller;
         mThreadControl = new ThreadControl();
+        allowSearch = false;
     }
 
     @Override
     protected String doInBackground(String... strings) {
+        Log.v(LOG_TAG, "Thread #" + this.toString() + " started");
         DefaultHttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(strings[0]);
         try {
@@ -39,20 +48,29 @@ public class ProcessWebPageTask extends AsyncTask<String,String,String> {
                 if (mThreadControl.isCancelled()) {
                     break;
                 }
-                List<String> urls = Utils.findUrls(line);
-                for (String url : urls) {
-                    publishProgress(URL_TAG, url);
+                if (line.trim().equals(BODY_START)) {
+                    allowSearch = true;
                 }
-                List<String> foundTexts = Utils.findTargetText(line, mSearchController.getTargetText());
-                for (String sentence : foundTexts) {
-                    publishProgress(TEXT_TAG, sentence);
+                if (line.trim().equals(BODY_END)) {
+                    allowSearch = false;
+                }
+                if (allowSearch) {
+                    List<String> urls = Utils.findUrls(line);
+                    for (String url : urls) {
+                        publishProgress(URL_TAG, url);
+                    }
+                    List<String> foundTexts = Utils.findTargetText(line, mSearchController.getTargetText());
+                    for (String sentence : foundTexts) {
+                        publishProgress(TEXT_TAG, sentence);
+                    }
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        Log.v(LOG_TAG, "Thread #" + this.toString() + " finished");
+        return strings[0];
     }
 
     @Override
@@ -68,7 +86,7 @@ public class ProcessWebPageTask extends AsyncTask<String,String,String> {
 
     @Override
     protected void onPostExecute(String s) {
-        mSearchController.removeTask(this);
+        mSearchController.removeTask(this, s);
         super.onPostExecute(s);
     }
 

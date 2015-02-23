@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import com.alexander.webtextsearcher.searcher.R;
-import com.alexander.webtextsearcher.searcher.core.AsyncTask;
 import com.alexander.webtextsearcher.searcher.core.SearchController;
 
 
@@ -46,14 +45,10 @@ public class MainActivity extends ActionBarActivity {
                         mCurrentMainActivityFragment = resultsFragment;
                         fragmentTransaction.replace(R.id.layout_pagesContainer, resultsFragment,
                                 getString(R.string.results_fragmentTag));
-
-//                        collectInputData();
-
                         break;
                     case 0:
                     default:
                         final ProgressFragment progressFragment = new ProgressFragment();
-                        progressFragment.setSearchController(mSearchController);
                         mCurrentMainActivityFragment = progressFragment;
                         fragmentTransaction.replace(R.id.layout_pagesContainer, progressFragment,
                                 getString(R.string.progress_fragmentTag));
@@ -80,7 +75,6 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         mMenu = menu;
         return true;
@@ -88,21 +82,20 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
             case R.id.action_start:
                 collectInputData();
                 if (mSearchController.isReadyForSearch()) {
 
-
                     mSearchController.start();
 
                     item.setVisible(false);
                     mMenu.findItem(R.id.action_pause).setVisible(true);
                     mMenu.findItem(R.id.action_stop).setVisible(true);
+
+                    setEditFieldsEnabled(false);
+
                 } else {
                     Toast.makeText(this, R.string.cannot_play_toast, Toast.LENGTH_LONG).show();
                 }
@@ -116,17 +109,19 @@ public class MainActivity extends ActionBarActivity {
                 mSearchController.stop();
                 item.setVisible(false);
                 mMenu.findItem(R.id.action_start).setVisible(true);
+                mMenu.findItem(R.id.action_pause).setVisible(false);
+
+                setEditFieldsEnabled(true);
                 break;
             default:
                 Log.w(LOG_TAG, "Unknown action");
         }
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
     }
 
     private void collectInputData() {
@@ -141,6 +136,17 @@ public class MainActivity extends ActionBarActivity {
 
     public void stopSearch() {
         mMenu.performIdentifierAction(R.id.action_stop, 0);
+    }
+
+    private void setEditFieldsEnabled(boolean enable) {
+        if (mCurrentMainActivityFragment.getTag().equals(getString(R.string.progress_fragmentTag))) {
+            ProgressFragment currentProgressFragment = (ProgressFragment) mCurrentMainActivityFragment;
+            currentProgressFragment.setEditFieldsEnabled(enable);
+        }
+    }
+
+    public SearchController getSearchController() {
+        return mSearchController;
     }
 
 }

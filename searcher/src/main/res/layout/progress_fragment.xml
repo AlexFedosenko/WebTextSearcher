@@ -1,73 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                style="@style/customFragment">
-
-    <TextView
-            android:id="@+id/text_inputHeader"
-            style="@style/headerText"
-            android:text="@string/inputHeader"
-            android:layout_alignParentTop="true"/>
-
-    <EditText
-            android:id="@+id/edt_url"
-            style="@style/editText"
-            android:hint="@string/url_hint"
-            android:layout_below="@+id/text_inputHeader"/>
-
-    <EditText
-            android:id="@+id/edt_target"
-            style="@style/editText"
-            android:hint="@string/searchingText_hint"
-            android:layout_below="@+id/edt_url"/>
-
-    <LinearLayout
-            android:id="@+id/layout_amounts"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edt_target"
-            android:weightSum="2"
-            android:orientation="horizontal">
+            android:background="@drawable/base_dark_background"
+            android:scrollbars="none">
+
+    <RelativeLayout
+                    style="@style/customFragment">
+
+        <TextView
+                android:id="@+id/text_inputHeader"
+                style="@style/headerText"
+                android:text="@string/inputHeader"
+                android:layout_alignParentTop="true"/>
 
         <EditText
-                android:id="@+id/edt_threadAmount"
+                android:id="@+id/edt_url"
                 style="@style/editText"
-                android:hint="@string/threadAmount_hint"
-                android:inputType="numberDecimal"
-                android:layout_weight="1"
-                android:layout_marginRight="@dimen/edt_amount_marginHorizontal"/>
+                android:hint="@string/url_hint"
+                android:layout_below="@+id/text_inputHeader"/>
 
         <EditText
-                android:id="@+id/edt_urlsAmount"
+                android:id="@+id/edt_target"
                 style="@style/editText"
-                android:hint="@string/urlsAmount_hint"
-                android:inputType="numberDecimal"
-                android:layout_weight="1"
-                android:layout_marginLeft="@dimen/edt_amount_marginHorizontal"/>
+                android:hint="@string/searchingText_hint"
+                android:layout_below="@+id/edt_url"/>
 
-    </LinearLayout>
+        <LinearLayout
+                android:id="@+id/layout_amounts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edt_target"
+                android:weightSum="2"
+                android:orientation="horizontal">
 
-    <TextView
-            android:id="@+id/text_progressHeader"
-            style="@style/headerText"
-            android:layout_marginTop="@dimen/text_progressHeader_marginTop"
-            android:text="@string/progressHeader"
-            android:layout_below="@+id/layout_amounts"/>
+            <EditText
+                    android:id="@+id/edt_threadAmount"
+                    style="@style/editText"
+                    android:hint="@string/threadAmount_hint"
+                    android:inputType="numberDecimal"
+                    android:layout_weight="1"
+                    android:layout_marginRight="@dimen/edt_amount_marginHorizontal"/>
 
-    <TextView
-            android:id="@+id/text_statusParagraph"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_status_textSize"
-            android:text="@string/status"
-            android:layout_marginTop="@dimen/text_status_marginTop"
-            android:layout_below="@+id/text_progressHeader"/>
+            <EditText
+                    android:id="@+id/edt_urlsAmount"
+                    style="@style/editText"
+                    android:hint="@string/urlsAmount_hint"
+                    android:inputType="numberDecimal"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/edt_amount_marginHorizontal"/>
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_status_textSize"
-            android:text="@string/status"
-            android:layout_alignBottom="@+id/text_statusParagraph"
-            android:layout_toRightOf="@+id/text_statusParagraph"/>
+        </LinearLayout>
 
-</RelativeLayout>
+        <TextView
+                android:id="@+id/text_progressHeader"
+                style="@style/headerText"
+                android:layout_marginTop="@dimen/text_progressHeader_marginTop"
+                android:text="@string/progressHeader"
+                android:layout_below="@+id/layout_amounts"/>
+
+        <TextView
+                android:id="@+id/text_statusParagraph"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_status_textSize"
+                android:text="@string/status"
+                android:layout_marginTop="@dimen/text_status_marginTop"
+                android:layout_below="@+id/text_progressHeader"/>
+
+
+        <TextView
+                android:id="@+id/text_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_status_textSize"
+                android:text="@string/ready"
+                android:layout_alignBottom="@+id/text_statusParagraph"
+                android:layout_toRightOf="@+id/text_statusParagraph"/>
+
+        <ProgressBar
+                android:id="@+id/view_progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_below="@+id/text_statusParagraph"
+                android:max="1"/>
+
+        <TextView
+                android:id="@+id/text_urlsHeader"
+                style="@style/headerText"
+                android:layout_marginTop="@dimen/text_progressHeader_marginTop"
+                android:text="@string/urlsHeader"
+                android:layout_below="@+id/view_progressBar"/>
+
+        <ListView
+                android:id="@+id/list_urls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/divider_grey"
+                android:background="@drawable/base_dark_background"
+                android:layout_below="@id/text_urlsHeader"/>
+    </RelativeLayout>
+</ScrollView>

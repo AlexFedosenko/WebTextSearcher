@@ -14,4 +14,6 @@
 
     <dimen name="text_status_textSize">18sp</dimen>
     <dimen name="text_status_marginTop">12dp</dimen>
+
+    <dimen name="listItem_url_layoutHeight">48dp</dimen>
 </resources>
