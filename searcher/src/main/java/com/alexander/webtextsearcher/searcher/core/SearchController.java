@@ -2,6 +2,7 @@ package com.alexander.webtextsearcher.searcher.core;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.util.Log;
 import com.alexander.webtextsearcher.searcher.R;
 import com.alexander.webtextsearcher.searcher.ui.MainActivity;
 
@@ -9,11 +10,11 @@ import java.util.*;
 
 public class SearchController {
 
-    private final String IDLE = "idle";
-    private final String RUNNING = "running";
-    private final String SUSPENDED = "suspended";
+    private enum State{
+        IDLE, RUNNING, PENDING, STOPPED
+    }
 
-    private String mState = IDLE;
+    private State mState;
     private String mUrl = "";
     private String mTargetText = "";
     private Integer mThreadAmount;
@@ -35,13 +36,19 @@ public class SearchController {
     private boolean mSearchInMeta;
 
     public SearchController(MainActivity activity) {
-        mActivity = activity;
+        setActivity(activity);
         allUrlMap = new LinkedHashMap<String, Boolean>();
         foundTextList = new HashSet<String>();
         taskList = new ArrayList<ProcessWebPageTask>();
         mUrlToProcessAmount = 0;
         mAlreadyScannedUrlAmount = 0;
         mSearchInMeta = false;
+        mState = State.STOPPED;
+        mError = "";
+    }
+
+    public void setActivity(MainActivity activity) {
+        mActivity = activity;
     }
 
     public void setUpdateProgressListener(UpdateProgressListener listener) {
@@ -145,30 +152,46 @@ public class SearchController {
     }
 
     public boolean isInProgress() {
-        return !mState.equals(IDLE);
+        return isPaused() || isRunning();
+    }
+
+    public boolean isIdle() {
+        return mState.equals(State.IDLE);
+    }
+
+    public boolean isPaused() {
+        return mState.equals(State.PENDING);
+    }
+
+    public boolean isRunning() {
+        return mState.equals(State.RUNNING);
+    }
+
+    public boolean isStopped() {
+        return mState.equals(State.STOPPED);
     }
 
     public void removeTask(ProcessWebPageTask task, String url) {
         taskList.remove(task);
         mAlreadyScannedUrlAmount++;
+        checkUrl(url);
         if (mUpdateProgressListener != null) {
             mUpdateProgressListener.incrementProgress(url);
         }
-        checkUrl(url);
         if (taskList.isEmpty()) {
             // no more URLs available or URL limit is reached
             mActivity.stopSearch();
-            mState = IDLE;
+            mState = State.IDLE;
             if (mUpdateProgressListener != null) {
                 mUpdateProgressListener.finishProgress();
             }
             printFoundStatus();
-            unlockScreenOrientation();
+//            unlockScreenOrientation();
         }
     }
 
     public void start() {
-        if (mState.equals(IDLE)) {
+        if (!isInProgress()) {
             allUrlMap.clear();
             taskList.clear();
             foundTextList.clear();
@@ -177,13 +200,13 @@ public class SearchController {
             mError = "";
             AsyncTask.setCorePoolSize(getThreadAmount());
             addUrl(mUrl);
-            mState = RUNNING;
+            mState = State.RUNNING;
             if (mUpdateProgressListener != null) {
                 mUpdateProgressListener.resetProgress();
             }
-            lockScreenOrientation();
+//            lockScreenOrientation();
         }
-        if (mState.equals(SUSPENDED)) {
+        if (mState.equals(State.PENDING)) {
             resume();
         }
         if (mUpdateStatusListener != null) {
@@ -204,20 +227,20 @@ public class SearchController {
         for (ProcessWebPageTask task : taskList) {
             task.cancel(true);
         }
-        mState = IDLE;
+        mState = State.STOPPED;
         mAlreadyScannedUrlAmount = mUrlAmount;
         if (mUpdateProgressListener != null) {
             mUpdateProgressListener.finishProgress();
         }
         printFoundStatus();
-        unlockScreenOrientation();
+//        unlockScreenOrientation();
     }
 
     public void pause() {
         for (ProcessWebPageTask task : taskList) {
             task.pause();
         }
-        mState = SUSPENDED;
+        mState = State.PENDING;
         printFoundStatus();
     }
 
@@ -225,15 +248,23 @@ public class SearchController {
         for (ProcessWebPageTask task : taskList) {
             task.resume();
         }
-        mState = RUNNING;
+        mState = State.RUNNING;
     }
 
-    private void printFoundStatus() {
+    public void printFoundStatus() {
         if (mError.isEmpty() && mUpdateStatusListener != null) {
-            if (foundTextList.isEmpty()) {
-                mUpdateStatusListener.updateStatus(mActivity.getString(R.string.notFound), mActivity.getResources().getColor(R.color.text_status_notFound_textColor));
-            } else {
-                mUpdateStatusListener.updateStatus(mActivity.getString(R.string.found), mActivity.getResources().getColor(R.color.text_status_found_textColor));
+            if (isIdle() || isPaused()) {
+                if (foundTextList.isEmpty()) {
+                    mUpdateStatusListener.updateStatus(mActivity.getString(R.string.notFound), mActivity.getResources().getColor(R.color.text_status_notFound_textColor));
+                } else {
+                    mUpdateStatusListener.updateStatus(mActivity.getString(R.string.found), mActivity.getResources().getColor(R.color.text_status_found_textColor));
+                }
+            }
+            if (isRunning()) {
+                mUpdateStatusListener.updateStatus(mActivity.getString(R.string.searching));
+            }
+            if (isStopped()) {
+                mUpdateStatusListener.updateStatus(mActivity.getString(R.string.ready));
             }
         } else {
             showErrorStatus(mError);

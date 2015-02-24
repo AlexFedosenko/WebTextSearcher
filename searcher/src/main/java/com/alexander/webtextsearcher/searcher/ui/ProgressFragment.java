@@ -11,7 +11,7 @@ import com.alexander.webtextsearcher.searcher.R;
 import com.alexander.webtextsearcher.searcher.core.*;
 import org.w3c.dom.Text;
 
-public class ProgressFragment extends Fragment implements UpdateProgressListener, UpdateStatusListener {
+public class ProgressFragment extends AbstractCustomFragment implements UpdateProgressListener, UpdateStatusListener {
 
     private EditText vEdtUrl;
     private EditText vEdtTarget;
@@ -22,8 +22,14 @@ public class ProgressFragment extends Fragment implements UpdateProgressListener
     private ProgressBar vProgressBar;
     private ListView vListUrls;
 
-    private SearchController mSearchController;
+
     private UrlListAdapter mAdapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,14 +59,15 @@ public class ProgressFragment extends Fragment implements UpdateProgressListener
             vProgressBar.setProgress(mSearchController.getAlreadyScannedUrlAmount());
         }
 
-        if (mSearchController.isInProgress()) {
-            setEditFieldsEnabled(false);
-        }
-
         vTextStatus = (TextView)rootView.findViewById(R.id.text_status);
+        mSearchController.printFoundStatus();
 
         vChBoxMeta = (CheckBox)rootView.findViewById(R.id.chBox_searchInMeta);
         vChBoxMeta.setChecked(mSearchController.isSearchInMeta());
+
+        if (mSearchController.isInProgress()) {
+            setEditFieldsEnabled(false);
+        }
 
         vListUrls = (ListView)rootView.findViewById(R.id.list_urls);
         mAdapter = new UrlListAdapter(getActivity(), mSearchController.getAllUrlMap());
@@ -70,8 +77,9 @@ public class ProgressFragment extends Fragment implements UpdateProgressListener
         return rootView;
     }
 
-    private void setSearchController(SearchController searchController) {
-        mSearchController = searchController;
+    @Override
+    protected void setSearchController(SearchController searchController) {
+        super.setSearchController(searchController);
         mSearchController.setUpdateProgressListener(this);
         mSearchController.setUpdateStatusListener(this);
         mSearchController.setUpdateResultListener(null);

@@ -1,6 +1,5 @@
 package com.alexander.webtextsearcher.searcher.ui;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -19,11 +18,9 @@ public class MainActivity extends ActionBarActivity {
     private final String LOG_TAG = "MainActivity";
 
     private ActionBar mActionBar;
-    private Fragment mCurrentMainActivityFragment;
+    private AbstractCustomFragment mCurrentMainActivityFragment;
     private Menu mMenu;
     private SearchController mSearchController;
-
-    private View vActivityRootView;
 
 
     @Override
@@ -31,10 +28,17 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mActionBar = getSupportActionBar();
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        mSearchController = new SearchController(this);
+        if (getSupportFragmentManager().getFragments() != null && !getSupportFragmentManager().getFragments().isEmpty()) {
+            mSearchController = ((AbstractCustomFragment)getSupportFragmentManager().getFragments().get(0)).getSearchController();
+            mSearchController.setActivity(this);
+            mActionBar = ((AbstractCustomFragment) getSupportFragmentManager().getFragments().get(0)).getActionBar();
+            mCurrentMainActivityFragment = (AbstractCustomFragment)getSupportFragmentManager().getFragments().get(0);
+        } else {
+            mActionBar = getSupportActionBar();
+            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+            mSearchController = new SearchController(this);
+        }
 
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             @Override
@@ -46,6 +50,7 @@ public class MainActivity extends ActionBarActivity {
                         fragmentTransaction.replace(R.id.layout_pagesContainer, resultsFragment,
                                 getString(R.string.results_fragmentTag));
                         mActionBar.getTabAt(1).setText(getResources().getStringArray(R.array.navigationTabs)[1]);
+                        mCurrentMainActivityFragment.setActionBar(mActionBar);
 
                         collectInputData();
                         break;
@@ -55,6 +60,7 @@ public class MainActivity extends ActionBarActivity {
                         mCurrentMainActivityFragment = progressFragment;
                         fragmentTransaction.replace(R.id.layout_pagesContainer, progressFragment,
                                 getString(R.string.progress_fragmentTag));
+                        mCurrentMainActivityFragment.setActionBar(mActionBar);
                 }
             }
 
@@ -72,7 +78,6 @@ public class MainActivity extends ActionBarActivity {
             mActionBar.addTab(mActionBar.newTab().setText(tabName).setTabListener(tabListener));
         }
 
-        vActivityRootView = findViewById(R.id.layout_pagesContainer);
     }
 
 
@@ -80,8 +85,25 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         mMenu = menu;
+        if (mSearchController.isRunning()) {
+            mMenu.findItem(R.id.action_start).setVisible(false);
+            mMenu.findItem(R.id.action_pause).setVisible(true);
+            mMenu.findItem(R.id.action_stop).setVisible(true);
+        }
+        if (mSearchController.isIdle()) {
+            mMenu.findItem(R.id.action_start).setVisible(true);
+            mMenu.findItem(R.id.action_pause).setVisible(false);
+            mMenu.findItem(R.id.action_stop).setVisible(false);
+        }
+        if (mSearchController.isPaused()) {
+            mMenu.findItem(R.id.action_start).setVisible(true);
+            mMenu.findItem(R.id.action_pause).setVisible(false);
+            mMenu.findItem(R.id.action_stop).setVisible(true);
+        }
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

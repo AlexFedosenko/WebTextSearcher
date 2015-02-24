@@ -15,12 +15,17 @@ import com.alexander.webtextsearcher.searcher.core.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ResultsFragment extends Fragment implements UpdateResultListener {
+public class ResultsFragment extends AbstractCustomFragment implements UpdateResultListener {
 
-    private SearchController mSearchController;
     private ResultListAdapter mAdapter;
 
     private ListView vListResults;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
@@ -35,8 +40,9 @@ public class ResultsFragment extends Fragment implements UpdateResultListener {
         return rootView;
     }
 
-    private void setSearchController(SearchController searchController) {
-        mSearchController = searchController;
+    @Override
+    protected void setSearchController(SearchController searchController) {
+        super.setSearchController(searchController);
         mSearchController.setUpdateResultListener(this);
         mSearchController.setUpdateStatusListener(null);
         mSearchController.setUpdateProgressListener(null);
