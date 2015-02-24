@@ -64,7 +64,7 @@ public class SearchController {
     }
 
     public boolean isReadyForSearch() {
-        return !mUrl.isEmpty() && !mTargetText.isEmpty() && mThreadAmount != null && mUrlAmount != null;
+        return !mUrl.isEmpty() && !mTargetText.isEmpty() && mThreadAmount != null && mUrlAmount != null && mThreadAmount > 0 && mUrlAmount > 0;
     }
 
     public void setUrl(String url) {

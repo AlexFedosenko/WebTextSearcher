@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 import com.alexander.webtextsearcher.searcher.R;
 import com.alexander.webtextsearcher.searcher.core.SearchController;
@@ -32,13 +31,12 @@ public class MainActivity extends ActionBarActivity {
         if (getSupportFragmentManager().getFragments() != null && !getSupportFragmentManager().getFragments().isEmpty()) {
             mSearchController = ((AbstractCustomFragment)getSupportFragmentManager().getFragments().get(0)).getSearchController();
             mSearchController.setActivity(this);
-            mActionBar = ((AbstractCustomFragment) getSupportFragmentManager().getFragments().get(0)).getActionBar();
             mCurrentMainActivityFragment = (AbstractCustomFragment)getSupportFragmentManager().getFragments().get(0);
         } else {
-            mActionBar = getSupportActionBar();
-            mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
             mSearchController = new SearchController(this);
         }
+        mActionBar = getSupportActionBar();
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             @Override

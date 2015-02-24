@@ -14,4 +14,6 @@
     <color name="text_status_found_textColor">#11ae54</color>
     <color name="text_status_error_textColor">#da3232</color>
 
+    <color name="edt_wrongData_textColor">#da3232</color>
+
 </resources>

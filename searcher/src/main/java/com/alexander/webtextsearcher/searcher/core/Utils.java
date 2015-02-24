@@ -1,5 +1,6 @@
 package com.alexander.webtextsearcher.searcher.core;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -14,6 +15,8 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
+    private static final String LOG_TAG = "Utils";
+
     public static List<String> findUrls(String inputText) {
         List<String> resultList = new ArrayList<String>();
         String VALID_CHARS = "-\\w+&@#/%=~()|";
@@ -26,24 +29,9 @@ public class Utils {
                 URL url = new URL(item);
                 resultList.add(url.toString());
             } catch (MalformedURLException e) {
-                // If there was an URL that was not it!...
-                System.out.print(item + " ");
+                Log.w(LOG_TAG, item);
             }
         }
-//        String [] parts = inputText.split("\\s+");
-//
-//        // Attempt to convert each item into an URL.
-//        for( String item : parts ) {
-//            if (item.startsWith(Consts.URL)) {
-//                try {
-//                    URL url = new URL(item);
-//                    resultList.add(url.toString());
-//                } catch (MalformedURLException e) {
-//                    // If there was an URL that was not it!...
-//                    System.out.print(item + " ");
-//                }
-//            }
-//        }
         return resultList;
     }
 

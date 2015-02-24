@@ -2,6 +2,9 @@ package com.alexander.webtextsearcher.searcher.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -9,9 +12,14 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.alexander.webtextsearcher.searcher.R;
 import com.alexander.webtextsearcher.searcher.core.*;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.w3c.dom.Text;
 
-public class ProgressFragment extends AbstractCustomFragment implements UpdateProgressListener, UpdateStatusListener {
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class ProgressFragment extends AbstractCustomFragment implements UpdateProgressListener, UpdateStatusListener, View.OnFocusChangeListener {
 
     private EditText vEdtUrl;
     private EditText vEdtTarget;
@@ -43,15 +51,77 @@ public class ProgressFragment extends AbstractCustomFragment implements UpdatePr
         if (!mSearchController.getUrl().isEmpty()) {
             vEdtUrl.setText(mSearchController.getUrl());
         }
+        vEdtUrl.setOnFocusChangeListener(this);
+        vEdtUrl.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Consts.URL_AMOUNT_LENGTH)});
+
         vEdtTarget = (EditText)rootView.findViewById(R.id.edt_target);
         if (!mSearchController.getTargetText().isEmpty()) {
             vEdtTarget.setText(mSearchController.getTargetText());
         }
+        vEdtTarget.setOnFocusChangeListener(this);
+        vEdtTarget.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Consts.TARGET_LENGTH)});
+
         vEdtThreads = (EditText)rootView.findViewById(R.id.edt_threadAmount);
         if (mSearchController.getThreadAmount() != null) {
             vEdtThreads.setText(String.valueOf(mSearchController.getThreadAmount()));
         }
+        vEdtThreads.setOnFocusChangeListener(this);
+        vEdtThreads.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Consts.THREAD_AMOUNT_LENGTH)});
+        vEdtThreads.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().isEmpty()) {
+                    String threads = editable.toString();
+                    if (!threads.equals(String.valueOf(Integer.parseInt(threads)))) {
+                        vEdtThreads.removeTextChangedListener(this);
+                        threads = String.valueOf(Integer.parseInt(threads));
+                        vEdtThreads.setText(threads);
+                        vEdtThreads.setSelection(threads.length());
+                        vEdtThreads.addTextChangedListener(this);
+                    }
+                }
+            }
+        });
+
         vEdtUrls = (EditText)rootView.findViewById(R.id.edt_urlsAmount);
+        vEdtUrls.setOnFocusChangeListener(this);
+        vEdtUrls.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Consts.URL_AMOUNT_LENGTH)});
+        vEdtUrls.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().isEmpty()) {
+                    String threads = editable.toString();
+                    if (!threads.equals(String.valueOf(Integer.parseInt(threads)))) {
+                        vEdtUrls.removeTextChangedListener(this);
+                        threads = String.valueOf(Integer.parseInt(threads));
+                        vEdtUrls.setText(threads);
+                        vEdtUrls.setSelection(threads.length());
+                        vEdtUrls.addTextChangedListener(this);
+                    }
+                }
+            }
+        });
+
         vProgressBar = (ProgressBar)rootView.findViewById(R.id.view_progressBar);
         if (mSearchController.getUrlAmount() != null) {
             vEdtUrls.setText(String.valueOf(mSearchController.getUrlAmount()));
@@ -173,4 +243,53 @@ public class ProgressFragment extends AbstractCustomFragment implements UpdatePr
     }
 
 
+    @Override
+    public void onFocusChange(View view, boolean focus) {
+        switch (view.getId()) {
+            case R.id.edt_url:
+                if (!focus) {
+                    checkEnteredUrl();
+                }
+                break;
+            case R.id.edt_threadAmount:
+                if (!focus) {
+                    checkEnteredThreadAmount();
+                }
+                break;
+            case R.id.edt_urlsAmount:
+                if (!focus) {
+                    checkEnteredUrlAmount();
+                }
+                break;
+        }
+    }
+
+    private void checkEnteredUrl() {
+        try {
+            new URL(vEdtUrl.getText().toString());
+            vEdtUrl.setTextColor(getResources().getColorStateList(R.color.edt_text_color));
+        } catch (MalformedURLException e) {
+            vEdtUrl.setTextColor(getResources().getColor(R.color.edt_wrongData_textColor));
+        }
+    }
+
+    private void checkEnteredUrlAmount() {
+        if (!vEdtUrls.getText().toString().isEmpty()) {
+            if (Integer.parseInt(vEdtUrls.getText().toString()) > 0) {
+                vEdtUrls.setTextColor(getResources().getColorStateList(R.color.edt_text_color));
+            } else {
+                vEdtUrls.setTextColor(getResources().getColor(R.color.edt_wrongData_textColor));
+            }
+        }
+    }
+
+    private void checkEnteredThreadAmount() {
+        if (!vEdtThreads.getText().toString().isEmpty()) {
+            if (Integer.parseInt(vEdtThreads.getText().toString()) > 0) {
+                vEdtThreads.setTextColor(getResources().getColorStateList(R.color.edt_text_color));
+            } else {
+                vEdtThreads.setTextColor(getResources().getColor(R.color.edt_wrongData_textColor));
+            }
+        }
+    }
 }
