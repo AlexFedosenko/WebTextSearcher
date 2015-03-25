@@ -1,7 +1,6 @@
 package com.alexander.webtextsearcher.searcher.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -12,9 +11,6 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.alexander.webtextsearcher.searcher.R;
 import com.alexander.webtextsearcher.searcher.core.*;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.w3c.dom.Text;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,12 +43,11 @@ public class ProgressFragment extends AbstractCustomFragment implements UpdatePr
 
         vEdtUrl = (EditText)rootView.findViewById(R.id.edt_url);
         // test
-        vEdtUrl.setText("http://habrahabr.ru/post/81294/");
+//        vEdtUrl.setText("http://habrahabr.ru/post/81294/");
         if (!mSearchController.getUrl().isEmpty()) {
             vEdtUrl.setText(mSearchController.getUrl());
         }
         vEdtUrl.setOnFocusChangeListener(this);
-        vEdtUrl.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Consts.URL_AMOUNT_LENGTH)});
 
         vEdtTarget = (EditText)rootView.findViewById(R.id.edt_target);
         if (!mSearchController.getTargetText().isEmpty()) {
